@@ -1,7 +1,6 @@
 package com.example.mynote.model;
 
-import jakarta.persistence.*;
-
+import javax.persistence.*;
 import java.sql.Date;
 
 @Entity

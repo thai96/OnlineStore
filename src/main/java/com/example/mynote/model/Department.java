@@ -1,6 +1,7 @@
 package com.example.mynote.model;
 
-import jakarta.persistence.*;
+
+import javax.persistence.*;
 
 @Entity
 public class Department {

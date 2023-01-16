@@ -1,8 +1,12 @@
 package com.example.mynote.model;
 
-import jakarta.persistence.*;
-
 import java.math.BigDecimal;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.GenerationType;
+
 
 @Entity
 public class Product {

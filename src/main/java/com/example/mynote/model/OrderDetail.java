@@ -1,15 +1,19 @@
 package com.example.mynote.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.Entity;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
 import java.math.BigDecimal;
 
-@Embeddable
+@Entity
+@IdClass(OrderProduct.class)
 public class OrderDetail {
+    @Id
     @Column(name = "OrderID",nullable = false)
     private Long orderId;
+    @Id
     @Column(name = "ProductID",nullable = false)
     private Long productId;
     @Column(name = "UnitPrice",nullable = false)
