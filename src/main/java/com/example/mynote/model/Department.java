@@ -1,9 +1,17 @@
 package com.example.mynote.model;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Department {
     @Id
     @Column(name = "DepartmentID")
@@ -13,32 +21,6 @@ public class Department {
     private String departmentName;
     @Column(name = "DepartmentType", length = 50)
     private String departmentType;
-
-    public Department() {}
-
-    public Department(Long departmentId, String departmentName, String departmentType) {
-        this.departmentId = departmentId;
-        this.departmentName = departmentName;
-        this.departmentType = departmentType;
-    }
-
-    public Long getDepartmentId() {
-        return departmentId;
-    }
-
-    public String getDepartmentName() {
-        return departmentName;
-    }
-
-    public String getDepartmentType() {
-        return departmentType;
-    }
-
-    public void setDepartmentName(String departmentName) {
-        this.departmentName = departmentName;
-    }
-
-    public void setDepartmentType(String departmentType) {
-        this.departmentType = departmentType;
-    }
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "department")
+    List<Employee> employees;
 }
