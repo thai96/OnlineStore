@@ -15,7 +15,7 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     private Long accountId;
-    @Column(name = "Email")
+    @Column(name = "Email", unique = true)
     private String email;
     @Column(name = "Password")
     private String password;

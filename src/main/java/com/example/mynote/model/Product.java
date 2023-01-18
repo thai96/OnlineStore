@@ -26,9 +26,9 @@ public class Product {
     private String quantityPerUnit;
     @Column(name = "UnitPrice")
     private BigDecimal unitPrice;
-    @Column(name = "UnitInStock")
+    @Column(name = "UnitsInStock")
     private short unitInStock;
-    @Column(name = "UnitOnStock")
+    @Column(name = "UnitsOnStock")
     private short unitOnStock;
     @Column(name = "ReorderLevel")
     private short reOrderLevel;
