@@ -12,6 +12,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "Departments")
 public class Department {
     @Id
     @Column(name = "DepartmentID")

@@ -1,0 +1,93 @@
+package com.example.mynote.service.impl;
+
+import com.example.mynote.exception.BadRequestException;
+import com.example.mynote.model.Customer;
+import com.example.mynote.model.Employee;
+import com.example.mynote.payload.*;
+import com.example.mynote.utils.AppUtils;
+import com.example.mynote.model.Account;
+import com.example.mynote.repositories.AccountRepository;
+import com.example.mynote.service.AccountService;
+import com.example.mynote.utils.RoleUtils;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+public class AccountServiceImpl implements AccountService {
+    private AccountRepository accountRepository;
+    private ModelMapper mapper;
+    @Autowired
+    public AccountServiceImpl(AccountRepository accountRepository, ModelMapper mapper) {
+        this.accountRepository = accountRepository;
+        this.mapper = mapper;
+    }
+
+    @Override
+    public AccountInfo getAccountInformation(String email) {
+        Account account = accountRepository.findAccountByEmail(email).orElseThrow(()-> new RuntimeException("account not found!"));
+        return new AccountInfo(account.getAccountId(),account.getEmail(), RoleUtils.getRoleByInt(account.getRole()), mapper.map(account.getCustomer(), CustomerInfor.class),mapper.map(account.getEmployee(), EmployeeInfor.class));
+    }
+
+    @Override
+    public Boolean checkAccountAvaibility(String email) {
+        return accountRepository.existsAccountByEmail(email);
+    }
+
+    @Override
+    public Account addAccount(Account newAccount) {
+        if(accountRepository.existsAccountByEmail(newAccount.getEmail())){
+            ApiResponse response = new ApiResponse(Boolean.FALSE,"Email is existed");
+            throw new BadRequestException(response);
+        }
+        return accountRepository.save(newAccount);
+    }
+
+    @Override
+    public Account updateAccountInformation(AccountInfo newInformation, AccountInfo oldInformation) {
+        Account account = accountRepository.findAccountByEmail(oldInformation.getEmail()).get();
+        account.setEmail(newInformation.getEmail());
+        account.setCustomer(mapper.map(newInformation.getCustomer(), Customer.class));
+        account.setEmployee(mapper.map(newInformation.getEmployee(), Employee.class));
+        return accountRepository.save(account);
+    }
+
+    @Override
+    public ApiResponse deleteAccount(String email) {
+        Account account = accountRepository.findAccountByEmail(email).orElseThrow(()-> new RuntimeException("account not found"));
+        accountRepository.delete(account);
+        return new ApiResponse(Boolean.TRUE, "Delete account successfully");
+    }
+
+    @Override
+    public ApiResponse giveAdmin(String email) {
+        Account account = accountRepository.findAccountByEmail(email).orElseThrow(()->new RuntimeException("account not found"));
+        account.setRole(RoleUtils.getRoleIdByRole(Role.EMPLOYEE));
+        accountRepository.save(account);
+        return new ApiResponse(Boolean.TRUE, "Give admin successful");
+    }
+
+    @Override
+    public ApiResponse removeAdmin(String email) {
+        Account account = accountRepository.findAccountByEmail(email).orElseThrow(()->new RuntimeException("account not found"));
+        account.setRole(RoleUtils.getRoleIdByRole(Role.CUSTOMER));
+        accountRepository.save(account);
+        return new ApiResponse(Boolean.TRUE, "Remove admin successful");
+    }
+
+    @Override
+    public List<AccountInfo> getAllAccount(int page, int size) {
+        AppUtils.validatePageNumberAndSize(page,size);
+        Pageable pageable = PageRequest.of(page,size, Sort.Direction.DESC,"accountId");
+        Page<Account> accounts = accountRepository.findAll(pageable);
+        List<AccountInfo> accountInfors = accounts.stream().map(account -> mapper.map(account, AccountInfo.class)).collect(Collectors.toList());
+        return accountInfors;
+    }
+}

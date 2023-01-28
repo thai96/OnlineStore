@@ -10,18 +10,19 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "Categories")
 public class Category {
     @Id
     @Column(name = "CategoryID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    public Long categoryId;
+    private Long categoryId;
     @Column(name = "CategoryName",unique = true ,nullable = false, length = 15)
-    public String categoryName;
+    private String categoryName;
     @Column(name = "Description")
-    public String description;
+    private String description;
     @Column(name = "Picture")
-    public byte[] picture;
+    private byte[] picture;
     @OneToMany(mappedBy = "category",fetch = FetchType.LAZY)
     List<Product> products;
 }

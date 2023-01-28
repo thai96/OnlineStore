@@ -9,11 +9,16 @@ import java.sql.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "Employees")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(onlyExplicitlyIncluded = true)
 public class Employee {
     @Id
     @Column(name = "EmployeeID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
+    @EqualsAndHashCode.Include
+    @ToString.Include
     private Long employeeId;
     @Column(name = "LastName", length = 20, nullable = false)
     private String lastName;
@@ -32,6 +37,6 @@ public class Employee {
     private Date hireDate;
     @Column(name = "Address", length = 60)
     private String address;
-    @OneToOne(mappedBy = "account", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "employee", fetch = FetchType.LAZY)
     private Account account;
 }

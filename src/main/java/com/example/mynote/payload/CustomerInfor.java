@@ -7,7 +7,7 @@ import lombok.Setter;
 @Data
 public class CustomerInfor {
     @Setter(AccessLevel.NONE)
-    private Long customerId;
+    private String customerId;
     private String email;
     private String contactName;
     private String contactTitle;

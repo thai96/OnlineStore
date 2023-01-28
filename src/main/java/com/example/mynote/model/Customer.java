@@ -1,6 +1,5 @@
 package com.example.mynote.model;
 
-
 import lombok.*;
 
 import javax.persistence.*;
@@ -9,10 +8,15 @@ import javax.persistence.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "Customers")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(onlyExplicitlyIncluded = true)
 public class Customer {
     @Id
     @Column(name = "CustomerID",length = 5)
     @Setter(AccessLevel.NONE)
+    @EqualsAndHashCode.Include
+    @ToString.Include
     private String customerId;
     @Column(name = "CompanyName", length = 40)
     private String companyName;
@@ -22,6 +26,6 @@ public class Customer {
     private String contactTitle;
     @Column(name = "Address")
     public String address;
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "account")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "customer")
     private Account account;
 }

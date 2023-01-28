@@ -12,8 +12,8 @@ public interface OrderService {
     Order updateOrder(OrderInfor modifiedRequest, OrderInfor oldRequest);
     ApiResponse deleteOrder(Long id);
     OrderInfor getOrderInfor(Long id);
-    List<OrderInfor> getCustomerOrderHistory();
-    List<OrderInfor> getEmployeeOrderHistory();
-    List<OrderInfor> getOrderByDate(Period timePeriod);
+    List<OrderInfor> getCustomerOrderHistory(int page, int size);
+    List<OrderInfor> getEmployeeOrderHistory(int page, int size);
+    List<OrderInfor> getOrderByDate(Period timePeriod,int page, int size);
     Order reOrder(Long id);
 }

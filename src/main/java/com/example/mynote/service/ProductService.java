@@ -12,6 +12,7 @@ public interface ProductService {
     Product updateProduct(ProductInfor oldInfor, ProductInfor newInfor);
     ApiResponse deleteProduct(Long id);
     ProductInfor getProduct(String productName);
-    List<ProductInfor> getProductByCategory(String categoryName);
+    List<ProductInfor> getProductByCategory(String categoryName,int page, int size);
+    List<ProductInfor> getAllProduct(int page, int size);
     List<ProductInfor> getHotItem();
 }

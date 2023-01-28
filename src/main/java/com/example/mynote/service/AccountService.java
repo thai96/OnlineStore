@@ -4,6 +4,8 @@ import com.example.mynote.model.Account;
 import com.example.mynote.payload.AccountInfo;
 import com.example.mynote.payload.ApiResponse;
 
+import java.util.List;
+
 public interface AccountService {
     AccountInfo getAccountInformation(String email);
     Boolean checkAccountAvaibility(String email);
@@ -12,4 +14,5 @@ public interface AccountService {
     ApiResponse deleteAccount(String email);
     ApiResponse giveAdmin(String email);
     ApiResponse removeAdmin(String email);
+    List<AccountInfo> getAllAccount(int page, int size);
 }

@@ -9,6 +9,6 @@ public interface CategoryService {
     Category addCategory(Category category);
     Category updateCategory(Category oldInfor, Category newInfor);
     ApiResponse deleteCategory(Long id);
-    List<CategoryInfor> getListCategory();
-    List<Category> getListCategoryWithDescription();
+    List<CategoryInfor> getListCategory(int page, int size);
+    List<Category> getListCategoryWithDescription(int page, int size);
 }

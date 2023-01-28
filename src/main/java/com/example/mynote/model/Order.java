@@ -11,6 +11,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "Orders")
 public class Order {
     @Id
     @Column(name = "OrderID")
@@ -18,10 +19,10 @@ public class Order {
     @Setter(AccessLevel.NONE)
     private Long orderId;
     @ManyToOne
-    @Column(name = "CustomerID", length = 5)
+    @JoinColumn(name = "CustomerID")
     private Customer customer;
     @ManyToOne
-    @Column(name = "EmployeeID")
+    @JoinColumn(name = "EmployeeID")
     private Employee employee;
     @Column(name = "OrderDate")
     private Date orderDate;

@@ -11,4 +11,5 @@ public interface DepartmentService {
     Department updateDepartment(Department oldInfor, Department newInfor);
     List<EmployeeInfor> getDepartmentEmployees(Department department);
     ApiResponse deleteDepartment(Department department);
+    List<Department> getAllDepartment(int page, int size);
 }

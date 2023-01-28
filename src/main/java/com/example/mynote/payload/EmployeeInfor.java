@@ -12,7 +12,7 @@ public class EmployeeInfor {
     private Long employeeId;
     private String lastName;
     private String firstName;
-    private Department department;
+    private String departmentName;
     private String title;
     private String titleOfCourtesy;
     private Date birthDate;

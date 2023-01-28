@@ -11,6 +11,7 @@ import javax.persistence.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "Products")
 public class Product {
     @Id
     @Column(name = "ProductID")
@@ -20,7 +21,7 @@ public class Product {
     @Column(name = "ProductName", length = 40, nullable = false)
     private String productName;
     @ManyToOne
-    @Column(name = "CategoryID")
+    @JoinColumn(name = "CategoryID")
     private Category category;
     @Column(name = "QuantityPerUnit",length = 20)
     private String quantityPerUnit;
