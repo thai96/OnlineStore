@@ -12,11 +12,15 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "Orders")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(onlyExplicitlyIncluded = true)
 public class Order {
     @Id
     @Column(name = "OrderID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
+    @EqualsAndHashCode.Include
+    @ToString.Include
     private Long orderId;
     @ManyToOne
     @JoinColumn(name = "CustomerID")

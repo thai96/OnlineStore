@@ -1,6 +1,7 @@
 package com.example.mynote.service.impl;
 
 import com.example.mynote.exception.BadRequestException;
+import com.example.mynote.exception.ResourceNotFoundException;
 import com.example.mynote.model.Customer;
 import com.example.mynote.model.Employee;
 import com.example.mynote.payload.*;
@@ -32,8 +33,14 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountInfo getAccountInformation(String email) {
-        Account account = accountRepository.findAccountByEmail(email).orElseThrow(()-> new RuntimeException("account not found!"));
-        return new AccountInfo(account.getAccountId(),account.getEmail(), RoleUtils.getRoleByInt(account.getRole()), mapper.map(account.getCustomer(), CustomerInfor.class),mapper.map(account.getEmployee(), EmployeeInfor.class));
+        Account account = accountRepository.findAccountByEmail(email).orElseThrow(()-> new ResourceNotFoundException("account not found!"));
+        AccountInfo accountInfor = new AccountInfo();
+        accountInfor.setAccountId(account.getAccountId());
+        accountInfor.setRole(RoleUtils.getRoleByInt(account.getRole()));
+        accountInfor.setEmail(account.getEmail());
+        accountInfor.setEmployee(account.getEmployee()==null? null : mapper.map(account.getEmployee(), EmployeeInfor.class));
+        accountInfor.setCustomer(account.getCustomer()==null? null : mapper.map(account.getCustomer(), CustomerInfor.class));
+        return accountInfor;
     }
 
     @Override
@@ -61,14 +68,17 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public ApiResponse deleteAccount(String email) {
-        Account account = accountRepository.findAccountByEmail(email).orElseThrow(()-> new RuntimeException("account not found"));
+        Account account = accountRepository.findAccountByEmail(email).orElseThrow(()->new ResourceNotFoundException("account not found"));
         accountRepository.delete(account);
         return new ApiResponse(Boolean.TRUE, "Delete account successfully");
     }
 
     @Override
     public ApiResponse giveAdmin(String email) {
-        Account account = accountRepository.findAccountByEmail(email).orElseThrow(()->new RuntimeException("account not found"));
+        Account account = accountRepository.findAccountByEmail(email).orElseThrow(()->new ResourceNotFoundException("account not found"));
+        if(account.getEmployee()==null){
+            throw new BadRequestException(new ApiResponse(Boolean.FALSE, "Account not valid"));
+        }
         account.setRole(RoleUtils.getRoleIdByRole(Role.EMPLOYEE));
         accountRepository.save(account);
         return new ApiResponse(Boolean.TRUE, "Give admin successful");
@@ -76,7 +86,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public ApiResponse removeAdmin(String email) {
-        Account account = accountRepository.findAccountByEmail(email).orElseThrow(()->new RuntimeException("account not found"));
+        Account account = accountRepository.findAccountByEmail(email).orElseThrow(()->new ResourceNotFoundException("account not found"));
         account.setRole(RoleUtils.getRoleIdByRole(Role.CUSTOMER));
         accountRepository.save(account);
         return new ApiResponse(Boolean.TRUE, "Remove admin successful");

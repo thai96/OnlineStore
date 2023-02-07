@@ -2,6 +2,7 @@ package com.example.mynote.utils;
 
 import com.example.mynote.exception.ShopApiException;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.Nullable;
 
 public class AppUtils {
     public static void validatePageNumberAndSize(int page, int size){

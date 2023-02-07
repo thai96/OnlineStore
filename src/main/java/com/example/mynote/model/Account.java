@@ -2,6 +2,7 @@ package com.example.mynote.model;
 
 
 import lombok.*;
+import lombok.extern.jackson.Jacksonized;
 
 import javax.persistence.*;
 

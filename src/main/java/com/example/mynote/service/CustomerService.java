@@ -9,9 +9,9 @@ import com.example.mynote.payload.CustomerInfor;
 import java.util.List;
 
 public interface CustomerService {
-    Customer addCustomer(Customer newCustomer, Account account);
+    Customer addCustomer(Customer newCustomer, String email);
     Customer updateCustomer(CustomerInfor oldInfor, CustomerInfor newInfor);
-    ApiResponse deleteCustomer(CustomerInfor customerInfor);
+    ApiResponse deleteCustomer(String customerID);
     CustomerInfor getCurrentCustomerInformation(String email);
     List<CustomerInfor> getAllCustomerInfor(int page, int size);
 }

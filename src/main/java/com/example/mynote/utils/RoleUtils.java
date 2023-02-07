@@ -1,5 +1,6 @@
 package com.example.mynote.utils;
 
+import com.example.mynote.exception.ResourceNotFoundException;
 import com.example.mynote.payload.Role;
 
 public class RoleUtils {
@@ -12,7 +13,7 @@ public class RoleUtils {
                 return Role.CUSTOMER;
             }
             default:
-                throw new RuntimeException("Role not existed!");
+                throw new ResourceNotFoundException("Role not existed!");
         }
     }
 
@@ -25,7 +26,7 @@ public class RoleUtils {
                 return 2;
             }
             default:
-                throw new RuntimeException("role not existed!");
+                throw new ResourceNotFoundException("role not existed!");
         }
     }
 }

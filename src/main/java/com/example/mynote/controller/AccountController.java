@@ -1,15 +1,14 @@
 package com.example.mynote.controller;
 
+import com.example.mynote.model.Account;
 import com.example.mynote.payload.AccountInfo;
+import com.example.mynote.payload.ApiResponse;
 import com.example.mynote.service.AccountService;
 import com.example.mynote.utils.AppConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,4 +29,67 @@ public class AccountController {
         List<AccountInfo> accounts = accountService.getAllAccount(page,size);
         return new ResponseEntity<>(accounts, HttpStatus.OK);
     }
+
+    @GetMapping("/AccountInformation")
+    public ResponseEntity<AccountInfo> getAccount(
+            @RequestParam(value = "email")String email
+    ){
+        if(accountService.checkAccountAvaibility(email)){
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        AccountInfo accountInfo = accountService.getAccountInformation(email);
+        return new ResponseEntity<AccountInfo>(accountInfo, HttpStatus.OK);
+    }
+
+    @GetMapping("/GiveAdmin")
+    public ResponseEntity giveAdmin(
+            @RequestParam(value = "email")String email
+    ){
+        if(accountService.checkAccountAvaibility(email)){
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        ApiResponse response = accountService.giveAdmin(email);
+        return new ResponseEntity(response.getStatus());
+    }
+
+    @GetMapping("/RemoveAdmin")
+    public ResponseEntity removeAdmin(
+            @RequestParam(value = "email")String email
+    ){
+        if(accountService.checkAccountAvaibility(email)){
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        ApiResponse response = accountService.removeAdmin(email);
+        return new ResponseEntity(response.getStatus());
+    }
+
+    @PostMapping("/UpdateAccount")
+    public ResponseEntity<Account> updateAccount(
+            @RequestParam(value = "oldInfor") AccountInfo oldInfor,
+            @RequestParam(value = "newInfor") AccountInfo newInfor
+    ){
+        Account account = accountService.updateAccountInformation(newInfor, oldInfor);
+        return new ResponseEntity<Account>(account, HttpStatus.OK);
+    }
+
+    @PutMapping("/AddNewAccount")
+    public ResponseEntity<Account> addAccount(
+            @RequestBody Account account
+    ){
+        if(accountService.checkAccountAvaibility(account.getEmail())){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        Account addedAccount = accountService.addAccount(account);
+        return new ResponseEntity<>(addedAccount, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/DeleteAccount")
+    public ResponseEntity deleteAccount(
+            @RequestParam(value = "email") String email
+    ){
+        ApiResponse response = accountService.deleteAccount(email);
+        return new ResponseEntity(response.getStatus());
+    }
+
+
 }

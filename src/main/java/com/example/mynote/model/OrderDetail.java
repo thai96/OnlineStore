@@ -1,9 +1,7 @@
 package com.example.mynote.model;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -13,15 +11,21 @@ import java.math.BigDecimal;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "Order Details")
+@Table(name = "`Order Details`")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(onlyExplicitlyIncluded = true)
 public class OrderDetail {
     @Id
     @ManyToOne
     @JoinColumn(name = "OrderID", nullable = false)
+    @EqualsAndHashCode.Include
+    @ToString.Include
     private Order order;
     @Id
     @ManyToOne
     @JoinColumn(name = "ProductID",nullable = false)
+    @EqualsAndHashCode.Include
+    @ToString.Include
     private Product product;
     @Column(name = "UnitPrice",nullable = false)
     private BigDecimal unitPrice;

@@ -11,20 +11,15 @@ import java.sql.Date;
 import java.util.List;
 @Data
 public class OrderInfor {
-    Customer customer;
-    Employee employee;
-    @JsonIgnore
+    CustomerInfor customer;
+    EmployeeInfor employee;
     private Date orderDate;
-    @JsonIgnore
     private Date requiredDate;
-    @JsonIgnore
     private Date shippedDate;
     private BigDecimal freight;
     private String shipName;
     private String shipAddress;
-    @JsonIgnore
     private String shipCity;
-    @JsonIgnore
     private String shipRegion;
-    List<OrderDetail> orderDetails;
+    List<OrderDetailInfo> orderDetails;
 }

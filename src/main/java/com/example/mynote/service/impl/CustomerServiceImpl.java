@@ -1,6 +1,7 @@
 package com.example.mynote.service.impl;
 
 import com.example.mynote.exception.BadRequestException;
+import com.example.mynote.exception.ResourceNotFoundException;
 import com.example.mynote.model.Account;
 import com.example.mynote.model.Customer;
 import com.example.mynote.payload.ApiResponse;
@@ -33,12 +34,16 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer addCustomer(Customer newCustomer, Account account) {
-        if(!accountRepository.existsAccountByEmail(account.getEmail())){
+    public Customer addCustomer(Customer newCustomer, String email) {
+        if(!accountRepository.existsAccountByEmail(email)){
             ApiResponse response = new ApiResponse(Boolean.FALSE,"Account not existed!");
             throw new BadRequestException(response);
         }
-        return customerRepository.save(newCustomer);
+        Customer savedCustomer = customerRepository.save(newCustomer);
+        Account acc = accountRepository.findAccountByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Account not found!"));
+        acc.setCustomer(savedCustomer);
+        accountRepository.save(acc);
+        return savedCustomer;
     }
 
     @Override
@@ -47,7 +52,7 @@ public class CustomerServiceImpl implements CustomerService {
             ApiResponse response = new ApiResponse(Boolean.FALSE, "Customer not existed!");
             throw new BadRequestException(response);
         }
-        Customer customer = customerRepository.findCustomerByCustomerId(oldInfor.getCustomerId()).orElseThrow(() -> new RuntimeException("Customer not existed"));
+        Customer customer = customerRepository.findCustomerByCustomerId(oldInfor.getCustomerId()).orElseThrow(() -> new ResourceNotFoundException("Customer not existed"));
         customer.setAddress(newInfor.getAddress());
         customer.setCompanyName(newInfor.getCompanyName());
         customer.setContactName(newInfor.getContactName());
@@ -56,12 +61,12 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public ApiResponse deleteCustomer(CustomerInfor customerInfor) {
-        if(customerRepository.existsById(customerInfor.getCustomerId())){
+    public ApiResponse deleteCustomer(String customerId) {
+        if(customerRepository.existsById(customerId)){
             ApiResponse response = new ApiResponse(Boolean.FALSE, "Customer not existed!");
             throw new BadRequestException(response);
         }
-        customerRepository.deleteById(customerInfor.getCustomerId());
+        customerRepository.deleteById(customerId);
         return new ApiResponse(Boolean.TRUE,"Delete customer successful");
     }
 
@@ -71,7 +76,7 @@ public class CustomerServiceImpl implements CustomerService {
             ApiResponse response = new ApiResponse(Boolean.FALSE, "Account contains email not existed!");
             throw new BadRequestException(response);
         }
-        Account account = accountRepository.findAccountByEmail(email).orElseThrow(() -> new RuntimeException("Account contain email not existed!"));
+        Account account = accountRepository.findAccountByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Account contain email not existed!"));
         if(account.getCustomer() == null){
             ApiResponse response = new ApiResponse(Boolean.FALSE, "Account is not a customer account!");
             throw new BadRequestException(response);

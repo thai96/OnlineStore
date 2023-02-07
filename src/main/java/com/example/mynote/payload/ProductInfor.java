@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 public class ProductInfor {
     private Long productId;
     private String productName;
-    private Category category;
+    private CategoryInfor category;
     private String quantityPerUnit;
     private BigDecimal unitPrice;
     private short unitInStock;

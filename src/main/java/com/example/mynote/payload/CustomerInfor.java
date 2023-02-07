@@ -8,7 +8,6 @@ import lombok.Setter;
 public class CustomerInfor {
     @Setter(AccessLevel.NONE)
     private String customerId;
-    private String email;
     private String contactName;
     private String contactTitle;
     private String companyName;

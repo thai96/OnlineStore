@@ -1,6 +1,7 @@
 package com.example.mynote.service.impl;
 
 import com.example.mynote.exception.BadRequestException;
+import com.example.mynote.exception.ResourceNotFoundException;
 import com.example.mynote.model.Category;
 import com.example.mynote.payload.ApiResponse;
 import com.example.mynote.payload.CategoryInfor;
@@ -28,7 +29,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category addCategory(Category category) {
-        if(categoryRepository.existsByCategoryName(category)){
+        if(categoryRepository.existsByCategoryName(category.getCategoryName())){
             ApiResponse response = new ApiResponse(Boolean.FALSE,"Category is existed");
             throw new BadRequestException(response);
         }
@@ -37,7 +38,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category updateCategory(Category oldInfor, Category newInfor) {
-        Category category = categoryRepository.findById(oldInfor.getCategoryId()).orElseThrow(()-> new RuntimeException("Category not found"));
+        Category category = categoryRepository.findById(oldInfor.getCategoryId()).orElseThrow(()-> new ResourceNotFoundException("Category not found"));
         category.setCategoryName(newInfor.getCategoryName());
         category.setDescription(newInfor.getDescription());
         category.setPicture(newInfor.getPicture());
