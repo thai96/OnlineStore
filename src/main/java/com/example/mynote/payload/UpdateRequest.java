@@ -3,11 +3,11 @@ package com.example.mynote.payload;
 import lombok.Data;
 
 @Data
-public class UpdateRequest<T>{
-    private T oldInfor;
+public class UpdateRequest<T,I>{
+    private I itemId;
     private T newInfor;
 
     public Boolean isNullInformation(){
-        return oldInfor == null || newInfor == null;
+        return itemId == null || newInfor == null;
     }
 }

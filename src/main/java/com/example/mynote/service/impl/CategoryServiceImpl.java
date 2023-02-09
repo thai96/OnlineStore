@@ -11,6 +11,7 @@ import com.example.mynote.utils.AppUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,8 +38,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category updateCategory(Category oldInfor, Category newInfor) {
-        Category category = categoryRepository.findById(oldInfor.getCategoryId()).orElseThrow(()-> new ResourceNotFoundException("Category not found"));
+    public Category updateCategory(Long id, Category newInfor) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("Category not found"));
         category.setCategoryName(newInfor.getCategoryName());
         category.setDescription(newInfor.getDescription());
         category.setPicture(newInfor.getPicture());
@@ -47,12 +49,12 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ApiResponse deleteCategory(Long id) {
-        if(categoryRepository.existsById(id)){
+        if(!categoryRepository.existsById(id)){
             ApiResponse response = new ApiResponse(Boolean.FALSE,"Category is existed");
             throw new BadRequestException(response);
         }
         categoryRepository.deleteById(id);
-        return new ApiResponse(Boolean.TRUE,"Delete category successfully");
+        return new ApiResponse(Boolean.TRUE,"Delete category successfully", HttpStatus.OK);
     }
 
     @Override

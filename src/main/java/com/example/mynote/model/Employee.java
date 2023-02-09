@@ -1,5 +1,7 @@
 package com.example.mynote.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,6 +14,7 @@ import java.sql.Date;
 @Table(name = "Employees")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true)
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "employeeId")
 public class Employee {
     @Id
     @Column(name = "EmployeeID")

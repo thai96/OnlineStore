@@ -41,9 +41,9 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public Department updateDepartment(Department oldInfor, Department newInfor) {
-        checkDepartmentExistById(oldInfor);
-        Department department = departmentRepository.findById(oldInfor.getDepartmentId()).orElseThrow(() -> new ResourceNotFoundException("Department not found!"));
+    public Department updateDepartment(Long id, Department newInfor) {
+        Department department = departmentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Department not found!"));
         department.setDepartmentType(newInfor.getDepartmentType());
         department.setDepartmentName(newInfor.getDepartmentName());
         return departmentRepository.save(department);
@@ -75,7 +75,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     private Boolean checkDepartmentExistById(Department department){
-        if(departmentRepository.existsById(department.getDepartmentId())) {
+        if(!departmentRepository.existsById(department.getDepartmentId())) {
             ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "Department is existed");
             throw new BadRequestException(apiResponse);
         }

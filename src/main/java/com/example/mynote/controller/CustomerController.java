@@ -44,12 +44,12 @@ public class CustomerController {
 
     @PostMapping("/update")
     public ResponseEntity<Customer> updateCustomer(
-            @RequestBody UpdateRequest<CustomerInfor> customers
+            @RequestBody UpdateRequest<CustomerInfor, String> customers
     ){
         if(customers.isNullInformation()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Customer customer = customerService.updateCustomer(customers.getOldInfor(), customers.getNewInfor());
+        Customer customer = customerService.updateCustomer(customers.getItemId(), customers.getNewInfor());
         return new ResponseEntity<>(customer, HttpStatus.OK);
     }
 

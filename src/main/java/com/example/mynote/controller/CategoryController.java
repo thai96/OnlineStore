@@ -51,12 +51,12 @@ public class CategoryController {
 
     @PostMapping("/update")
     public ResponseEntity<Category> updateCategory(
-            @RequestBody UpdateRequest<Category> categories
+            @RequestBody UpdateRequest<Category, Long> categories
     ){
         if(categories.isNullInformation()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Category category = categoryService.updateCategory(categories.getOldInfor(), categories.getNewInfor());
+        Category category = categoryService.updateCategory(categories.getItemId(), categories.getNewInfor());
         return new ResponseEntity<>(category, HttpStatus.OK);
     }
 

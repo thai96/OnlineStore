@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface DepartmentService {
     Department addDepartment(Department department);
-    Department updateDepartment(Department oldInfor, Department newInfor);
+    Department updateDepartment(Long id, Department newInfor);
     List<EmployeeInfor> getDepartmentEmployees(Department department);
     ApiResponse deleteDepartment(Department department);
     List<Department> getAllDepartment(int page, int size);

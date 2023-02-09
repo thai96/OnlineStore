@@ -10,7 +10,7 @@ public interface AccountService {
     AccountInfo getAccountInformation(String email);
     Boolean checkAccountAvaibility(String email);
     Account addAccount(Account newAccount);
-    Account updateAccountInformation(AccountInfo newInformation, AccountInfo oldInformation);
+    Account updateAccountInformation(AccountInfo newInformation, String email);
     ApiResponse deleteAccount(String email);
     ApiResponse giveAdmin(String email);
     ApiResponse removeAdmin(String email);

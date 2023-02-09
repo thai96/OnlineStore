@@ -42,7 +42,7 @@ public class OrderController {
 
     @GetMapping("/customer/history")
     public ResponseEntity<List<OrderInfor>> getCustomerOrderHistory(
-            @RequestBody String customerId
+            @RequestParam String customerId
     ){
         if(customerId == null || customerId.trim().isEmpty()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -53,7 +53,7 @@ public class OrderController {
 
     @GetMapping("/employee/history")
     public ResponseEntity<List<OrderInfor>> getEmployeeOrderHistory(
-            @RequestBody Long id
+            @RequestParam Long id
     ){
         if(id == null){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -80,12 +80,12 @@ public class OrderController {
 
     @PostMapping("/update")
     public ResponseEntity<Order> updateOrder(
-            @RequestBody UpdateRequest<OrderInfor> updateRequest
+            @RequestBody UpdateRequest<OrderInfor, Long> updateRequest
     ){
         if(updateRequest.isNullInformation()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Order order = orderService.updateOrder(updateRequest.getNewInfor(), updateRequest.getOldInfor());
+        Order order = orderService.updateOrder(updateRequest.getNewInfor(), updateRequest.getItemId());
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 

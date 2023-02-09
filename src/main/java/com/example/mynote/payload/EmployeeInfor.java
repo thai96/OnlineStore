@@ -8,7 +8,6 @@ import lombok.Setter;
 import java.util.Date;
 @Data
 public class EmployeeInfor {
-    @Setter(AccessLevel.NONE)
     private Long employeeId;
     private String lastName;
     private String firstName;

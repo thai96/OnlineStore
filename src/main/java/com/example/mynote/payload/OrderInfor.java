@@ -11,8 +11,9 @@ import java.sql.Date;
 import java.util.List;
 @Data
 public class OrderInfor {
-    CustomerInfor customer;
-    EmployeeInfor employee;
+    private Long orderId;
+    private CustomerInfor customer;
+    private EmployeeInfor employee;
     private Date orderDate;
     private Date requiredDate;
     private Date shippedDate;

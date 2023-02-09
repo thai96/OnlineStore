@@ -1,6 +1,8 @@
 package com.example.mynote.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,6 +15,7 @@ import java.util.List;
 @Table(name = "Categories")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(onlyExplicitlyIncluded = true)
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "categoryId", scope = Category.class)
 public class Category {
     @Id
     @Column(name = "CategoryID")

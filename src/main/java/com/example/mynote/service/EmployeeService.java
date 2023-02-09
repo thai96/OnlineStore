@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface EmployeeService {
     Employee addEmployee(EmployeeInfor employee, AccountInfo account);
-    Employee updateEmployee(EmployeeInfor oldInfor,EmployeeInfor newInfor);
+    Employee updateEmployee(Long id,EmployeeInfor newInfor);
     ApiResponse deleteEmployee(EmployeeInfor employeeInfor);
     EmployeeInfor getEmployeeInformation(String email);
     ApiResponse moveEmployeeDepartment(EmployeeInfor employee, Department newDepartment);

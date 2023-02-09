@@ -32,7 +32,7 @@ public class DepartmentController {
         return new ResponseEntity<>(departments, HttpStatus.OK);
     }
 
-    @GetMapping("/employee")
+    @PostMapping("/employee")
     public ResponseEntity<List<EmployeeInfor>> getDepartmentEmployee(
             @RequestBody Department department
     ){
@@ -42,12 +42,12 @@ public class DepartmentController {
 
     @PostMapping("/update")
     public ResponseEntity<Department> updateDepartment(
-            @RequestBody UpdateRequest<Department> requestContent
+            @RequestBody UpdateRequest<Department, Long> requestContent
     ){
         if(requestContent.isNullInformation()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Department updatedDepartment = departmentService.updateDepartment(requestContent.getOldInfor(), requestContent.getNewInfor());
+        Department updatedDepartment = departmentService.updateDepartment(requestContent.getItemId(), requestContent.getNewInfor());
         return new ResponseEntity<>(updatedDepartment, HttpStatus.OK);
     }
 

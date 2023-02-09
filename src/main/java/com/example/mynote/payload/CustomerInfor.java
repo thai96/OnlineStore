@@ -6,7 +6,6 @@ import lombok.Setter;
 
 @Data
 public class CustomerInfor {
-    @Setter(AccessLevel.NONE)
     private String customerId;
     private String contactName;
     private String contactTitle;

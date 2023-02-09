@@ -53,9 +53,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee updateEmployee(EmployeeInfor oldInfor, EmployeeInfor newInfor) {
-        checkEmployeeExistById(oldInfor);
-        Employee employee = employeeRepository.findById(oldInfor.getEmployeeId()).get();
+    public Employee updateEmployee(Long id, EmployeeInfor newInfor) {
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException(new ApiResponse(Boolean.FALSE, "E0mployee not found")));
         employee.setAddress(newInfor.getAddress());
         employee.setTitle(newInfor.getTitle());
         Department department = departmentRepository.findDepartmentByDepartmentName(newInfor.getDepartmentName()).orElseThrow(()->new ResourceNotFoundException("Department not found!"));

@@ -3,6 +3,7 @@ package com.example.mynote.controller;
 import com.example.mynote.model.Account;
 import com.example.mynote.payload.AccountInfo;
 import com.example.mynote.payload.ApiResponse;
+import com.example.mynote.payload.UpdateRequest;
 import com.example.mynote.service.AccountService;
 import com.example.mynote.utils.AppConstant;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class AccountController {
     public ResponseEntity<AccountInfo> getAccount(
             @RequestParam(value = "email")String email
     ){
-        if(accountService.checkAccountAvaibility(email)){
+        if(!accountService.checkAccountAvaibility(email)){
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
         AccountInfo accountInfo = accountService.getAccountInformation(email);
@@ -65,10 +66,9 @@ public class AccountController {
 
     @PostMapping("/UpdateAccount")
     public ResponseEntity<Account> updateAccount(
-            @RequestParam(value = "oldInfor") AccountInfo oldInfor,
-            @RequestParam(value = "newInfor") AccountInfo newInfor
-    ){
-        Account account = accountService.updateAccountInformation(newInfor, oldInfor);
+            @RequestBody UpdateRequest<AccountInfo, String> request
+            ){
+        Account account = accountService.updateAccountInformation(request.getNewInfor(), request.getItemId());
         return new ResponseEntity<Account>(account, HttpStatus.OK);
     }
 

@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface CategoryService {
     Category addCategory(Category category);
-    Category updateCategory(Category oldInfor, Category newInfor);
+    Category updateCategory(Long id, Category newInfor);
     ApiResponse deleteCategory(Long id);
     List<CategoryInfor> getListCategory(int page, int size);
     List<Category> getListCategoryWithDescription(int page, int size);

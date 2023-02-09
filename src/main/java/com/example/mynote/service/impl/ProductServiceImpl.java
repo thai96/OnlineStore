@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -38,25 +39,28 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product addProduct(ProductInfor product) {
-        if(categoryRepository.existsById(product.getCategory().getCategoryId())){
+        if(!categoryRepository.existsById(product.getCategory().getCategoryId())){
             ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "Category invalid");
             throw new BadRequestException(apiResponse);
         }
-        if(checkValidProductQuantity(product)){
+        if(!checkValidProductQuantity(product)){
             ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "Product quantity is invalid");
             throw new BadRequestException(apiResponse);
         }
+        Category category = categoryRepository.findById(product.getCategory().getCategoryId())
+                .orElseThrow(() -> new BadRequestException(new ApiResponse(Boolean.FALSE, "Category not found!")));
         Product productEntity = mapper.map(product, Product.class);
+        productEntity.setCategory(category);
         return productRepository.save(productEntity);
     }
 
     @Override
-    public Product updateProduct(ProductInfor oldInfor, ProductInfor newInfor) {
-        if(checkValidProductQuantity(newInfor)){
+    public Product updateProduct(Long productId, ProductInfor newInfor) {
+        if(!checkValidProductQuantity(newInfor)){
             ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "Quantity invalid");
             throw new BadRequestException(apiResponse);
         }
-        Product product = productRepository.findById(oldInfor.getProductId())
+        Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new BadRequestException(new ApiResponse(Boolean.FALSE, "Product not found!")));
         product.setProductName(newInfor.getProductName());
         Category category = categoryRepository.findById(newInfor.getCategory().getCategoryId())
@@ -69,7 +73,9 @@ public class ProductServiceImpl implements ProductService {
         product.setUnitPrice(newInfor.getUnitPrice());
         product.setDiscontinued(newInfor.getDiscontinued());
         product.setPicture(newInfor.getPicture());
-        return productRepository.save(product);
+        Product updatedProduct = productRepository.save(product);
+        updatedProduct.getCategory().setProducts(null);
+        return updatedProduct;
     }
 
     @Override
@@ -77,7 +83,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException(new ApiResponse(Boolean.FALSE, "Product not exist")));
         productRepository.delete(product);
-        return new ApiResponse(Boolean.TRUE, "Delete successful");
+        return new ApiResponse(Boolean.TRUE, "Delete successful", HttpStatus.OK);
     }
 
     @Override
@@ -93,7 +99,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductInfor> getProductByCategory(String categoryName, int page, int size) {
         AppUtils.validatePageNumberAndSize(page, size);
-        if(categoryRepository.existsByCategoryName(categoryName)){
+        if(!categoryRepository.existsByCategoryName(categoryName)){
             throw new BadRequestException(new ApiResponse(Boolean.FALSE, "Category not valid"));
         }
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, "productName");

@@ -45,12 +45,12 @@ public class EmployeeController {
 
     @PostMapping("/UpdateEmployee")
     public ResponseEntity<Employee> updateEmployee(
-            @RequestBody UpdateRequest<EmployeeInfor> employeeInfors
+            @RequestBody UpdateRequest<EmployeeInfor, Long> employeeInfors
     ){
         if(employeeInfors.isNullInformation()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Employee employee =employeeService.updateEmployee(employeeInfors.getOldInfor(), employeeInfors.getNewInfor());
+        Employee employee =employeeService.updateEmployee(employeeInfors.getItemId(), employeeInfors.getNewInfor());
         return new ResponseEntity<>(employee, HttpStatus.OK);
     }
 

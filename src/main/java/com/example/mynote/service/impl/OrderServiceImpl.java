@@ -21,7 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,7 +53,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order addOrder(OrderInfor newOrder) {
-        if(checkOrder(newOrder)){
+        if(!checkOrder(newOrder)){
             ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "Order not valid");
             throw new BadRequestException(apiResponse);
         }
@@ -66,9 +66,25 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order updateOrder(OrderInfor modifiedRequest, OrderInfor oldRequest) {
-
-        return null;
+    public Order updateOrder(OrderInfor modifiedRequest, Long id) {
+        if(!checkOrder(modifiedRequest)){
+            throw new BadRequestException(new ApiResponse(Boolean.FALSE, "Order is not valid"));
+        }
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException(new ApiResponse(Boolean.FALSE, "Order not found!")));
+        order.setCustomer(customerRepository.findCustomerByCustomerId(modifiedRequest.getCustomer().getCustomerId())
+                .orElseThrow(() -> new BadRequestException(new ApiResponse(Boolean.FALSE, "Customer not found!"))));
+        order.setEmployee(employeeRepository.findById(modifiedRequest.getEmployee().getEmployeeId())
+                .orElseThrow(() -> new BadRequestException(new ApiResponse(Boolean.FALSE, "Employee not found!"))));
+        order.setOrderDate(modifiedRequest.getOrderDate());
+        order.setRequiredDate(modifiedRequest.getRequiredDate());
+        order.setShippedDate(modifiedRequest.getShippedDate());
+        order.setFreight(modifiedRequest.getFreight());
+        order.setShipName(modifiedRequest.getShipName());
+        order.setShipAddress(modifiedRequest.getShipAddress());
+        order.setShipCity(modifiedRequest.getShipCity());
+        order.setShipRegion(modifiedRequest.getShipRegion());
+        return orderRepository.save(order);
     }
 
     @Override
@@ -123,6 +139,32 @@ public class OrderServiceImpl implements OrderService {
         return orderDetailRepository.saveAll(orderDetailList);
     }
 
+    private List<OrderDetail> compareOldOrder(Order order, List<OrderDetailInfo> infor){
+        List<OrderDetail> newOrderDetails = infor.stream().map(orderDetailInfo -> mapper.map(orderDetailInfo, OrderDetail.class)).collect(Collectors.toList());
+        List<OrderDetail> oldOrderDetails = orderDetailRepository.findOrderDetailsByOrder_OrderId(order.getOrderId());
+        newOrderDetails.forEach(od -> od.setOrder(order));
+        if(isListEqual(newOrderDetails, oldOrderDetails)){
+            return newOrderDetails;
+        }
+        else{
+            return updateOrderDetail(newOrderDetails, oldOrderDetails);
+        }
+    }
+
+    private List<OrderDetail> updateOrderDetail(List<OrderDetail> newOrderDetails, List<OrderDetail> oldOrderDetails) {
+        ArrayList<OrderDetail> finalList = new ArrayList<>(newOrderDetails);
+        ArrayList<OrderDetail> deleteList = new ArrayList<>(oldOrderDetails);
+        for (OrderDetail od: finalList) {
+            if(!deleteList.contains(od)){
+                deleteList.remove(od);
+            }
+        }
+        for (OrderDetail od: deleteList) {
+            orderDetailRepository.deleteAll(deleteList);
+        }
+        return orderDetailRepository.saveAll(finalList);
+    }
+
     private Boolean checkOrder(OrderInfor orderInfor){
         List<OrderDetailInfo> orderDetailInfos = orderInfor.getOrderDetails();
         if(orderDetailInfos.isEmpty()){
@@ -153,5 +195,20 @@ public class OrderServiceImpl implements OrderService {
             Long currentTime = System.currentTimeMillis();
             period.setEnd(new Date(currentTime));
         }
+    }
+
+    private Boolean isListEqual(List<OrderDetail> l1, List<OrderDetail> l2){
+        ArrayList<OrderDetail> temporaryList = new ArrayList<>(l1);
+        for (OrderDetail od: l2) {
+            if(!temporaryList.remove(od)){
+                return false;
+            }
+        }
+        return temporaryList.isEmpty();
+    }
+
+    private Boolean compareOrder(OrderDetail order1, OrderDetail order2){
+        return !(order1.getProduct() == order2.getProduct() || order1.getUnitPrice() == order2.getUnitPrice()
+                || order1.getQuantity() == order2.getQuantity()|| order1.getDiscount()== order2.getDiscount());
     }
 }

@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface OrderService {
     Order addOrder(OrderInfor newOrder);
-    Order updateOrder(OrderInfor modifiedRequest, OrderInfor oldRequest);
+    Order updateOrder(OrderInfor modifiedRequest, Long id);
     ApiResponse deleteOrder(Long id);
     OrderInfor getOrderInfor(Long id);
     List<OrderInfor> getCustomerOrderHistory(String customerId);

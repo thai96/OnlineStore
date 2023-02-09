@@ -47,12 +47,13 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer updateCustomer(CustomerInfor oldInfor, CustomerInfor newInfor) {
-        if(customerRepository.existsById(oldInfor.getCustomerId())){
+    public Customer updateCustomer(String id, CustomerInfor newInfor) {
+        if(customerRepository.existsById(id)){
             ApiResponse response = new ApiResponse(Boolean.FALSE, "Customer not existed!");
             throw new BadRequestException(response);
         }
-        Customer customer = customerRepository.findCustomerByCustomerId(oldInfor.getCustomerId()).orElseThrow(() -> new ResourceNotFoundException("Customer not existed"));
+        Customer customer = customerRepository.findCustomerByCustomerId(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not existed"));
         customer.setAddress(newInfor.getAddress());
         customer.setCompanyName(newInfor.getCompanyName());
         customer.setContactName(newInfor.getContactName());

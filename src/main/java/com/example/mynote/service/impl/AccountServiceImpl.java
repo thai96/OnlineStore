@@ -58,8 +58,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account updateAccountInformation(AccountInfo newInformation, AccountInfo oldInformation) {
-        Account account = accountRepository.findAccountByEmail(oldInformation.getEmail()).get();
+    public Account updateAccountInformation(AccountInfo newInformation, String email) {
+        Account account = accountRepository.findAccountByEmail(email)
+                .orElseThrow(() -> new BadRequestException(new ApiResponse(Boolean.FALSE, "Account not found!")));
         account.setEmail(newInformation.getEmail());
         account.setCustomer(mapper.map(newInformation.getCustomer(), Customer.class));
         account.setEmployee(mapper.map(newInformation.getEmployee(), Employee.class));

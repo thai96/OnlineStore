@@ -57,11 +57,11 @@ public class ProductController {
     }
 
     @PostMapping("/update")
-    public ResponseEntity<Product> updateProduct(@RequestBody UpdateRequest<ProductInfor> request){
+    public ResponseEntity<Product> updateProduct(@RequestBody UpdateRequest<ProductInfor,Long> request){
         if(request.isNullInformation()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Product product = productService.updateProduct(request.getOldInfor(), request.getNewInfor());
+        Product product = productService.updateProduct(request.getItemId(), request.getNewInfor());
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
