@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -69,9 +70,10 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public ApiResponse deleteAccount(String email) {
-        Account account = accountRepository.findAccountByEmail(email).orElseThrow(()->new ResourceNotFoundException("account not found"));
+        Account account = accountRepository.findAccountByEmail(email)
+                .orElseThrow(()->new ResourceNotFoundException("account not found"));
         accountRepository.delete(account);
-        return new ApiResponse(Boolean.TRUE, "Delete account successfully");
+        return new ApiResponse(Boolean.TRUE, "Delete account successfully", HttpStatus.OK);
     }
 
     @Override
@@ -87,7 +89,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public ApiResponse removeAdmin(String email) {
-        Account account = accountRepository.findAccountByEmail(email).orElseThrow(()->new ResourceNotFoundException("account not found"));
+        Account account = accountRepository.findAccountByEmail(email)
+                .orElseThrow(()->new ResourceNotFoundException("account not found"));
         account.setRole(RoleUtils.getRoleIdByRole(Role.CUSTOMER));
         accountRepository.save(account);
         return new ApiResponse(Boolean.TRUE, "Remove admin successful");
@@ -98,7 +101,6 @@ public class AccountServiceImpl implements AccountService {
         AppUtils.validatePageNumberAndSize(page,size);
         Pageable pageable = PageRequest.of(page,size, Sort.Direction.DESC,"accountId");
         Page<Account> accounts = accountRepository.findAll(pageable);
-        List<AccountInfo> accountInfors = accounts.stream().map(account -> mapper.map(account, AccountInfo.class)).collect(Collectors.toList());
-        return accountInfors;
+        return accounts.stream().map(account -> mapper.map(account, AccountInfo.class)).collect(Collectors.toList());
     }
 }

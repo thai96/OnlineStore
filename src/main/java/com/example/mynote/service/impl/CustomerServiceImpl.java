@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -68,7 +69,7 @@ public class CustomerServiceImpl implements CustomerService {
             throw new BadRequestException(response);
         }
         customerRepository.deleteById(customerId);
-        return new ApiResponse(Boolean.TRUE,"Delete customer successful");
+        return new ApiResponse(Boolean.TRUE,"Delete customer successful", HttpStatus.OK);
     }
 
     @Override

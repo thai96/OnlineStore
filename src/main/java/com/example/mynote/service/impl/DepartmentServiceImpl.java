@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -64,7 +65,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     public ApiResponse deleteDepartment(Department department) {
         checkDepartmentExistById(department);
         departmentRepository.delete(department);
-        return new ApiResponse(Boolean.TRUE,"Delete successful");
+        return new ApiResponse(Boolean.TRUE,"Delete successful", HttpStatus.OK);
     }
 
     @Override

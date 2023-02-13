@@ -19,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -73,7 +74,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         checkEmployeeExistById(employeeInfor);
         Employee employee = employeeRepository.findById(employeeInfor.getEmployeeId()).get();
         employeeRepository.delete(employee);
-        return new ApiResponse(Boolean.TRUE,"Delete successful!");
+        return new ApiResponse(Boolean.TRUE,"Delete successful!", HttpStatus.OK);
     }
 
     @Override
@@ -101,7 +102,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         Employee employeeInDepartment = employeeRepository.findById(employee.getEmployeeId()).get();
         employeeInDepartment.setDepartment(newDepartment);
-        return new ApiResponse(Boolean.TRUE,"Employee move to new department successful!");
+        return new ApiResponse(Boolean.TRUE,"Employee move to new department successful!", HttpStatus.OK);
     }
 
     @Override

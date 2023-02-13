@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -91,7 +92,7 @@ public class OrderServiceImpl implements OrderService {
     public ApiResponse deleteOrder(Long id) {
         Order order = orderRepository.findById(id).orElseThrow(() -> new BadRequestException(new ApiResponse(Boolean.FALSE, "Delete order failed! Order not found!")));
         orderRepository.delete(order);
-        return new ApiResponse(Boolean.TRUE, "Delete order successful");
+        return new ApiResponse(Boolean.TRUE, "Delete order successful", HttpStatus.OK);
     }
 
     @Override
