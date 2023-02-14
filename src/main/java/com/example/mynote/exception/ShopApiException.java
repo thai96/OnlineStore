@@ -2,7 +2,10 @@ package com.example.mynote.exception;
 
 import org.springframework.http.HttpStatus;
 
+import javax.validation.constraints.NotNull;
+
 public class ShopApiException extends RuntimeException{
+    @NotNull
     public final HttpStatus status;
     public final String message;
     public ShopApiException(HttpStatus status, String message){
