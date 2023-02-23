@@ -1,8 +1,9 @@
 # OnlineStore-RESTapi
 This is a rest-api which contain several funtionality such as: User authorization & authentication, manage employee & order, ...  
-This project need JRM version 11 and Apache Maven to run which can download in the following link:  
+This project need MSSQL Server version 2019,JRM version 11 and Apache Maven to run which can download in the following link:  
 * [Apache Maven](https://maven.apache.org/download.cgi)  
 * [JVM 11](https://www.oracle.com/in/java/technologies/javase/jdk11-archive-downloads.html)  
+* [MSSQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
 ## How to run project  
 Run the following command in project folder
 ```bash
