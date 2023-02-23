@@ -3,6 +3,7 @@ package com.example.mynote.model;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
@@ -16,6 +17,9 @@ import javax.persistence.*;
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "customerId")
 public class Customer {
     @Id
+    @GeneratedValue(generator = "prod-generator")
+    @GenericGenerator(name = "prod-generator",
+    strategy = "com.example.mynote.utils.CustomerIdGenerator")
     @Column(name = "CustomerID",length = 5)
     @Setter(AccessLevel.NONE)
     @EqualsAndHashCode.Include

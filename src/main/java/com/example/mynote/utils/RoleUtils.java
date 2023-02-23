@@ -29,4 +29,30 @@ public class RoleUtils {
                 throw new ResourceNotFoundException("role not existed!");
         }
     }
+
+    public static int getRoleByString(String role){
+        switch (role.trim().toLowerCase()){
+            case "employee":{
+                return 1;
+            }
+            case "customer":{
+                return 2;
+            }
+            default:
+                throw new ResourceNotFoundException("Role not existed!");
+        }
+    }
+
+    public static String getRoleString(int roleId){
+        switch (roleId){
+            case 1: {
+                return "Employee";
+            }
+            case 2:{
+                return "Customer";
+            }
+            default:
+                throw new ResourceNotFoundException("Role not existed!");
+        }
+    }
 }

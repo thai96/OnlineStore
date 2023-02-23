@@ -5,6 +5,8 @@ import com.example.mynote.exception.ResourceNotFoundException;
 import com.example.mynote.model.Customer;
 import com.example.mynote.model.Employee;
 import com.example.mynote.payload.*;
+import com.example.mynote.service.CustomerService;
+import com.example.mynote.service.EmployeeService;
 import com.example.mynote.utils.AppUtils;
 import com.example.mynote.model.Account;
 import com.example.mynote.repositories.AccountRepository;
@@ -17,7 +19,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,11 +29,22 @@ import java.util.stream.Collectors;
 @Service
 public class AccountServiceImpl implements AccountService {
     private AccountRepository accountRepository;
+    private CustomerService customerService;
+    private EmployeeService employeeService;
     private ModelMapper mapper;
+    private PasswordEncoder passwordEncoder;
+
     @Autowired
-    public AccountServiceImpl(AccountRepository accountRepository, ModelMapper mapper) {
+    public AccountServiceImpl(AccountRepository accountRepository,
+                              ModelMapper mapper,
+                              CustomerService customerService,
+                              EmployeeService employeeService,
+                              PasswordEncoder passwordEncoder) {
         this.accountRepository = accountRepository;
         this.mapper = mapper;
+        this.customerService = customerService;
+        this.employeeService = employeeService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -50,11 +65,29 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @Transactional
+    public ApiResponse registerUser(SignUpRequest signUpRequest) {
+        int roleId = RoleUtils.getRoleByString(signUpRequest.getRole());
+        Account account = new Account(null, signUpRequest.getEmail(), passwordEncoder.encode(signUpRequest.getPassword()), null,null,roleId);
+        Account savedAccount = accountRepository.save(account);
+        AccountInfo savedAccountInfo = mapper.map(savedAccount, AccountInfo.class);
+        if(signUpRequest.getEmployeeInfor() != null){
+            employeeService.addEmployee(signUpRequest.getEmployeeInfor(), savedAccountInfo);
+        }
+        Customer customer = mapper.map(signUpRequest.getCustomerInfor(), Customer.class);
+        if(signUpRequest.getCustomerInfor() != null){
+            customerService.addCustomer(mapper.map(signUpRequest.getCustomerInfor(), Customer.class), savedAccountInfo.getEmail());
+        }
+        return new ApiResponse(Boolean.TRUE, "New account register successfully");
+    }
+
+    @Override
     public Account addAccount(Account newAccount) {
         if(accountRepository.existsAccountByEmail(newAccount.getEmail())){
             ApiResponse response = new ApiResponse(Boolean.FALSE,"Email is existed");
             throw new BadRequestException(response);
         }
+        newAccount.setPassword(passwordEncoder.encode(newAccount.getPassword()));
         return accountRepository.save(newAccount);
     }
 
